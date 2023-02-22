@@ -43,7 +43,7 @@ float centcal(int xbin, int nbin)
 }
 
 //Analysis
-void yield_by_centrality_v3()
+void pion0Analysis_Ncoll1()
 {	
 	//Set files and TTrees
 	TFile* input0 = new TFile("outfile_pAu200GeV_set00_grp000_00000.root", "read");
@@ -70,9 +70,6 @@ void yield_by_centrality_v3()
 	//pion0 pT distribution vs centrality
 	TH2D* pTpion_cent = new TH2D("pTpion0_cent", "", 11, 0, 110, 100, 0, 14 );
 	
-	//Ncoll vs centrality
-	TH2D* ncoll_cent = new TH2D("ncoll_cent", "", 11, 0, 110, 50, 0, 50);
-	
 	float pTsum = 0.;
 	float centrality = 0.;
 	float ncoll = 0.;
@@ -88,12 +85,10 @@ void yield_by_centrality_v3()
 			
 			//centrality calculation
 			centrality = centcal(refhis -> FindBin(pTsum), 1e5);
-			
-			//store ncoll_cent
-			ncoll_cent -> Fill(centrality, ncoll);
 
 			for(int j = 0; j < np0; j++){
-				if(p_id0[j] == 111){
+				//store events with Ncoll = 1 
+				if(p_id0[j] == 111 and ncoll == 1){
 					//store pTpion0_cent
 					pTpion_cent -> Fill(centrality, p_pt0[j]);
 				}
@@ -103,10 +98,9 @@ void yield_by_centrality_v3()
 	}//i, event loop
 	
 	//new TFile to store centrality-event histogram
-	TFile* output = new TFile("pAu200GeV_option3_yield_by_centrality_v3.root", "recreate");
+	TFile* output = new TFile("pAu200GeV_option3_pion0Analysis_Ncoll1.root", "recreate");
 
 	pTpion_cent -> Write();
-	ncoll_cent -> Write();
 
 	output -> Close();
 
